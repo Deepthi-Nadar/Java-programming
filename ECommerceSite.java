@@ -40,13 +40,11 @@ public class ECommerceSite extends JFrame implements ItemListener {
         // -------- TOP PANEL --------
         JPanel topPanel = new JPanel(new BorderLayout());
 
-        // --- Site name at top ---
         JLabel siteName = new JLabel("A-Z Shopping Site", JLabel.CENTER);
         siteName.setFont(new Font("Arial", Font.BOLD, 24));
-        siteName.setForeground(new Color(0, 128, 0)); // GREEN heading
+        siteName.setForeground(new Color(0, 128, 0));
         topPanel.add(siteName, BorderLayout.NORTH);
 
-        // --- Search box centered ---
         JPanel searchPanel = new JPanel(new FlowLayout(FlowLayout.CENTER, 10, 10));
         searchField = new JTextField(20);
         JButton searchBtn = createGreenButton("Search");
@@ -54,7 +52,6 @@ public class ECommerceSite extends JFrame implements ItemListener {
         searchPanel.add(searchBtn);
         topPanel.add(searchPanel, BorderLayout.CENTER);
 
-        // --- Cart button on the right ---
         cartBtn = createGreenButton("Cart (0)");
         topPanel.add(cartBtn, BorderLayout.EAST);
 
@@ -122,11 +119,23 @@ public class ECommerceSite extends JFrame implements ItemListener {
 
     private JButton createGreenButton(String text) {
         JButton btn = new JButton(text);
-        btn.setBackground(new Color(0, 128, 0)); // green
-        btn.setForeground(Color.WHITE);          // white text
+        btn.setBackground(new Color(0, 128, 0));
+        btn.setForeground(Color.WHITE);
         btn.setFocusPainted(false);
         return btn;
     }
+
+
+    private JButton createRedButton(String text) {
+        JButton btn = new JButton(text);
+        btn.setBackground(new Color(123, 0, 0));
+        btn.setForeground(Color.WHITE);
+        btn.setFocusPainted(false);
+        return btn;
+    }
+
+
+
 
     private void loadProducts() {
         products = new ArrayList<>();
@@ -190,24 +199,29 @@ public class ECommerceSite extends JFrame implements ItemListener {
             }
 
             JPanel btnPanel = new JPanel(new FlowLayout(FlowLayout.CENTER, 5, 5));
-            JButton addToCartBtn = createGreenButton("Add to Cart");
-            JButton buyNowBtn = createGreenButton("Buy Now");
 
-            addToCartBtn.addActionListener(e -> {
-                cartItems.add(p);
+            // ✅ Replace Add to Cart button with a checkbox
+            JCheckBox cartCheckBox = new JCheckBox("Add to Cart");
+            cartCheckBox.addItemListener(e -> {
+                if (cartCheckBox.isSelected()) {
+                    if (!cartItems.contains(p)) {
+                        cartItems.add(p);
+                    }
+                } else {
+                    cartItems.remove(p);
+                }
                 updateCartButton();
-                JOptionPane.showMessageDialog(this, p.name + " added to cart!");
             });
 
+            JButton buyNowBtn = createGreenButton("Buy Now");
             buyNowBtn.addActionListener(e -> {
                 JOptionPane.showMessageDialog(this, "Buying " + p.name + " for ₹" + p.price);
             });
 
-            btnPanel.add(addToCartBtn);
+            btnPanel.add(cartCheckBox);
             btnPanel.add(buyNowBtn);
 
             card.add(btnPanel);
-
             productGrid.add(card);
         }
         productGrid.revalidate();
@@ -234,7 +248,7 @@ public class ECommerceSite extends JFrame implements ItemListener {
         cartDialog.add(scrollPane, BorderLayout.CENTER);
 
         JPanel btnPanel = new JPanel();
-        JButton deleteBtn = createGreenButton("Delete Selected Items");
+        JButton deleteBtn = createRedButton("Delete Selected Items");
         JButton buyBtn = createGreenButton("Buy Selected Items");
 
         deleteBtn.addActionListener(e -> {
